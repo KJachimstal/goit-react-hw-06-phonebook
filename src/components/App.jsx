@@ -1,102 +1,98 @@
-import { Component } from 'react';
+import { useEffect, useState } from 'react';
 import { Section } from './Section';
 import { ContactForm } from './ContactForm';
 import { Contacts } from './Contacts';
 import { FindContacts } from './FindContacts';
 import { nanoid } from 'nanoid';
-export class App extends Component {
-  state = {
-    contacts: [],
-    filter: '',
-    name: '',
-    number: '',
+
+export const App = props => {
+  const [contacts, setContacts] = useState([
+    { name: 'Ala', number: '11-11-11', id: 1 },
+    { name: 'Hela', number: '11-11-11', id: 2 },
+    { name: 'Ela', number: '11-11-11', id: 3 },
+  ]);
+  const [filter, setFilter] = useState('');
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
+
+  useEffect(() => {
+    const parsedContacts = JSON.parse(props.localStorageContacts);
+    if (parsedContacts && parsedContacts.length !== 0)
+      setContacts(parsedContacts);
+  }, [props.localStorageContacts, setContacts]);
+
+  useEffect(() => {
+    localStorage.setItem('contacts', JSON.stringify(contacts));
+  }, [contacts]);
+
+  const searchContacts = name => {
+    return contacts.filter(contact =>
+      contact.name.toLowerCase().includes(name.toLowerCase())
+    );
   };
 
-  constructor(props) {
-    super(props);
-    const contacts = JSON.parse(this.props.localStorageContacts);
-    if (contacts !== null) this.state.contacts = contacts;
-  }
-
-  saveToLocalStorage = () => {
-    localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+  const addContact = async data => {
+    await setContacts(prevContacts => [...prevContacts, data]);
   };
 
-  handleSubmit = event => {
+  const handleSubmit = event => {
     event.preventDefault();
-    const { name, number } = this.state;
     const id = nanoid();
 
-    if (this.searchContacts(name).length !== 0) {
+    if (searchContacts(name).length !== 0) {
       alert(`${name} is already in contacts.`);
     } else {
-      this.addContact({ name, number, id });
+      addContact({ name, number, id });
     }
   };
 
-  handleDelete = async id => {
-    await this.setState({
-      contacts: this.state.contacts.filter(contact => contact.id !== id),
-    });
-    this.saveToLocalStorage();
-  };
-
-  searchContacts = data => {
-    return this.state.contacts.filter(({ name }) =>
-      name.toLowerCase().includes(data.toLowerCase())
+  const handleDelete = async id => {
+    await setContacts(prevContacts =>
+      prevContacts.filter(contact => contact.id !== id)
     );
   };
 
-  handleChange = async event => {
-    await this.setState({
-      [event.target.name]: event.target.value,
-    });
+  const handleChangeName = async event => {
+    await setName(event.target.value);
   };
 
-  handleFilterChange = event => {
-    this.handleChange(event);
-    this.searchContacts(event.target.value);
+  const handleChangeNumber = async event => {
+    await setNumber(event.target.value);
   };
 
-  addContact = async data => {
-    await this.setState(state => ({
-      contacts: [...state.contacts, data],
-    }));
-    this.saveToLocalStorage();
+  const handleFilterChange = event => {
+    setFilter(event.target.value);
+    searchContacts(event.target.value);
   };
 
-  render() {
-    return (
-      <div
-        style={{
-          height: '100vh',
-          display: 'flex',
-          justifyContent: 'center',
-          flexDirection: 'column',
-          alignItems: 'center',
-          fontSize: 40,
-          color: '#010101',
-        }}
-      >
-        <Section title="Phonebook">
-          <ContactForm
-            handleSubmit={this.handleSubmit}
-            name={this.state.name}
-            number={this.state.number}
-            handleChange={this.handleChange}
-          />
-        </Section>
-        <Section title="Contacts">
-          <FindContacts
-            filter={this.state.filter}
-            handleChange={this.handleFilterChange}
-          />
-          <Contacts
-            contacts={this.searchContacts(this.state.filter)}
-            handleDelete={this.handleDelete}
-          />
-        </Section>
-      </div>
-    );
-  }
-}
+  return (
+    <div
+      style={{
+        height: '100vh',
+        display: 'flex',
+        justifyContent: 'center',
+        flexDirection: 'column',
+        alignItems: 'center',
+        fontSize: 40,
+        color: '#010101',
+      }}
+    >
+      <Section title="Phonebook">
+        <ContactForm
+          onSubmit={handleSubmit}
+          name={name}
+          number={number}
+          onNameChange={handleChangeName}
+          onNumberChange={handleChangeNumber}
+        />
+      </Section>
+      <Section title="Contacts">
+        <FindContacts filter={filter} onFilterChange={handleFilterChange} />
+        <Contacts
+          contacts={searchContacts(filter)}
+          onContactDelete={handleDelete}
+        />
+      </Section>
+    </div>
+  );
+};
