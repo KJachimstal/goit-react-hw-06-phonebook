@@ -1,18 +1,26 @@
-const addConstact = {
-  type: 'contacts/addComtact',
-  payload: {
-    name: 'User entered name',
-    number: 'User entered number',
-    id: 'Generated ID',
-  },
+import { nanoid } from 'nanoid';
+
+export const addContact = newContact => {
+  return {
+    type: 'contacts/addComtact',
+    payload: {
+      name: newContact.name,
+      number: newContact.number,
+      id: nanoid(),
+    },
+  };
 };
 
-const deleteContact = {
-  type: 'contacts/deleteContacts',
-  payload: 'Contact ID',
+export const deleteContact = contactId => {
+  return {
+    type: 'contacts/deleteContacts',
+    payload: contactId,
+  };
 };
 
-const setFilter = {
-  type: 'filter/setFilter',
-  payload: 'Filter value',
+export const setFilter = filterValue => {
+  return {
+    type: 'filter/setFilter',
+    payload: filterValue,
+  };
 };
