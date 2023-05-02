@@ -1,15 +1,9 @@
-import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addContact } from '../redux/actions';
 
-export const ContactForm = ({
-  name,
-  number,
-  onNameChange,
-  onNumberChange,
-  onSubmit,
-}) => {
+export const ContactForm = ({ name, number, onNameChange, onNumberChange }) => {
   const dispatch = useDispatch();
+  const contacts = useSelector(store => store.contacts);
 
   const handleSubmit = event => {
     event.preventDefault();
@@ -18,6 +12,14 @@ export const ContactForm = ({
       name: form.elements.name.value,
       number: form.elements.number.value,
     };
+
+    const filteredContacts = contacts.filter(contact =>
+      contact.name.toLowerCase().includes(newContact.name.toLowerCase())
+    );
+
+    if (filteredContacts.length !== 0) {
+      alert(`${newContact.name} is already in contacts!`);
+    }
 
     dispatch(addContact(newContact));
     form.reset();
@@ -58,12 +60,4 @@ export const ContactForm = ({
       </button>
     </form>
   );
-};
-
-ContactForm.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-  onNameChange: PropTypes.func.isRequired,
-  onNumberChange: PropTypes.func.isRequired,
-  name: PropTypes.string.isRequired,
-  number: PropTypes.string.isRequired,
 };

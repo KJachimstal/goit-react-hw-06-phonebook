@@ -1,6 +1,15 @@
-import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
+import { setFilter } from '../redux/actions';
 
-export const FindContacts = ({ filter, onFilterChange }) => {
+export const FindContacts = () => {
+  const dispatch = useDispatch();
+  const filteredValue = useSelector(state => state.filters);
+
+  const handleChange = event => {
+    const searchValue = event.target.value;
+    dispatch(setFilter(searchValue));
+  };
+
   return (
     <label htmlFor="find" className="form-label">
       Search by name:
@@ -9,14 +18,9 @@ export const FindContacts = ({ filter, onFilterChange }) => {
         type="text"
         id="find"
         name="filter"
-        value={filter}
-        onChange={onFilterChange}
+        value={filteredValue}
+        onChange={handleChange}
       />
     </label>
   );
-};
-
-FindContacts.propTypes = {
-  onFilterChange: PropTypes.func.isRequired,
-  filter: PropTypes.string.isRequired,
 };
