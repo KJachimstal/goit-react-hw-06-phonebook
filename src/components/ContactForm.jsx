@@ -1,4 +1,6 @@
 import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
+import { addContact } from '../redux/actions';
 
 export const ContactForm = ({
   name,
@@ -7,8 +9,22 @@ export const ContactForm = ({
   onNumberChange,
   onSubmit,
 }) => {
+  const dispatch = useDispatch();
+
+  const handleSubmit = event => {
+    event.preventDefault();
+    const form = event.target;
+    const newContact = {
+      name: form.elements.name.value,
+      number: form.elements.number.value,
+    };
+
+    dispatch(addContact(newContact));
+    form.reset();
+  };
+
   return (
-    <form onSubmit={onSubmit} className="comtainer">
+    <form onSubmit={handleSubmit} className="comtainer">
       <label htmlFor="name" className="form-label">
         Name
         <input
