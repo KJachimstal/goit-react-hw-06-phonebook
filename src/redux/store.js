@@ -11,9 +11,9 @@ const preloadedState = {
 
 const phonebook = {
   contacts: [],
-  filters: {
-    status: '',
-  },
+  filters: '',
+  name: '',
+  number: '',
 };
 
 const rootReducer = (state = phonebook, action) => {
