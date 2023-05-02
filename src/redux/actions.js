@@ -13,7 +13,7 @@ export const addContact = newContact => {
 
 export const deleteContact = contactId => {
   return {
-    type: 'contacts/deleteContacts',
+    type: 'contacts/deleteContact',
     payload: contactId,
   };
 };
