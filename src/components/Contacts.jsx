@@ -5,8 +5,8 @@ import { useEffect, useState } from 'react';
 export const Contacts = () => {
   const dispatch = useDispatch();
   const [filteredContacts, setFilteredContacts] = useState([]);
-  const contacts = useSelector(store => store.contacts);
-  const filter = useSelector(store => store.filter);
+  const contacts = useSelector(store => store.contacts.items);
+  const filter = useSelector(store => store.contacts.filter);
 
   useEffect(() => {
     setFilteredContacts(

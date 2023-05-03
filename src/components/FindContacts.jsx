@@ -3,7 +3,7 @@ import { setFilter } from '../redux/actions';
 
 export const FindContacts = () => {
   const dispatch = useDispatch();
-  const filteredValue = useSelector(state => state.filters);
+  const filteredValue = useSelector(state => state.contacts.filters);
 
   const handleChange = event => {
     const searchValue = event.target.value;

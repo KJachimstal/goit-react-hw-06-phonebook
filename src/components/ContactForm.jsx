@@ -3,7 +3,7 @@ import { addContact } from '../redux/actions';
 
 export const ContactForm = ({ name, number, onNameChange, onNumberChange }) => {
   const dispatch = useDispatch();
-  const contacts = useSelector(store => store.contacts);
+  const contacts = useSelector(store => store.contacts.items);
 
   const handleSubmit = event => {
     event.preventDefault();
